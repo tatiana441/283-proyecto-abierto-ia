@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '@clerk/react';
+import { useAuth } from './lib/auth';
 import './index.css';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -12,6 +12,8 @@ import HomePage from './pages/HomePage';
 import ResultsPage from './pages/ResultsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import CategoryDetailPage from './pages/CategoryDetailPage';
+import AltoRiesgoPage from './pages/AltoRiesgoPage';
+import ChatWidget from './components/shared/ChatWidget';
 import { NAV } from './constants/copy';
 
 // ProtectedRoute ensures that only authenticated users can access the component
@@ -154,7 +156,7 @@ export default function App() {
         } />
         <Route path="/alto-riesgo" element={
           <ProtectedRoute>
-            <PlaceholderPage title="Medicamentos de Alto Riesgo" />
+            <AltoRiesgoPage />
           </ProtectedRoute>
         } />
         <Route path="*" element={<PlaceholderPage title="Página no encontrada" />} />
@@ -162,6 +164,9 @@ export default function App() {
 
       {/* Persistent footer */}
       <Footer />
+
+      {/* Asistente conversacional con trazabilidad (solo autenticado) */}
+      <ChatWidget />
 
       {/* Global scroll-to-top button (visible after 25% scroll) */}
       <ScrollToTopButton />

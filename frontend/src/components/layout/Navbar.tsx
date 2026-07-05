@@ -1,14 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { NAV, APP_NAME } from '../../constants/copy';
-import { useClerk, useAuth } from '@clerk/react';
+import { useAuth } from '../../lib/auth';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isSignedIn } = useAuth();
-  const { signOut } = useClerk();
+  const { isSignedIn, signOut: supabaseSignOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const signOut = async (_opts?: { redirectUrl?: string }) => {
+    await supabaseSignOut();
+    navigate('/');
+  };
   const navRef = useRef<HTMLElement>(null);
 
   const [prevPath, setPrevPath] = useState(location.pathname);

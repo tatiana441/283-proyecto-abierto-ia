@@ -2,6 +2,15 @@
 
 Registro cronológico de versiones y cambios.
 
+## [0.3.0] — 2026-07-05 · Día 3
+
+### Agregado
+- **Asistente conversacional** (`src/agents/citizen_agent.py`): tool-calling vía OpenRouter con 6 herramientas de datos y trazabilidad `sources[]`; prompts versionados en `models/llm_rag/prompt_templates.json`; `POST /api/chat` con persistencia en `chat_logs`. Verificado con pregunta real (metotrexato: score 56,3, última autorización dic-2025, fuentes citadas).
+- **Agente analista** (`src/agents/analyst_agent.py`): aiInsight determinista y explicable por medicamento + reporte automático de riesgo (`reports/reporte_riesgo_automatico.md`).
+- **Bias tests** (`tests/bias_tests/`): invarianza al nombre, no supresión de huérfanos, no alarmismo sin evidencia, techo de la urgencia, distribución real no degenerada.
+- **Frontend real**: Supabase Auth reemplaza a Clerk (login/registro propios, sesión reactiva); cliente API con adaptador a los tipos existentes; búsqueda y detalle con datos en vivo (perfil + riesgo con aiInsight + precios SISMED/regulados + historial + alternativas); página `/alto-riesgo` con el ranking; estadísticas reales en la landing; **ChatWidget** flotante con fuentes.
+- `docs/marco_metodologico.md` (CRISP-ML(Q)). Build de producción del frontend en verde.
+
 ## [0.2.0] — 2026-07-05 · Día 2
 
 ### Agregado

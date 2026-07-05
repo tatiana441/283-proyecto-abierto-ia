@@ -1,7 +1,7 @@
-import { HOW_IT_WORKS, LANDING_FEATURES, LANDING_STATS } from '../constants/copy';
+import { HOW_IT_WORKS, LANDING_FEATURES } from '../constants/copy';
 import LandingHero from '../components/home/LandingHero';
 import HowItWorksCards from '../components/home/HowItWorksCards';
-import LandingStats from '../components/home/LandingStats';
+import LiveLandingStats from '../components/home/LiveLandingStats';
 import LandingFeatures from '../components/home/LandingFeatures';
 import LandingDemo from '../components/home/LandingDemo';
 import LandingPersonas from '../components/home/LandingPersonas';
@@ -38,7 +38,7 @@ export default function LandingPage() {
       </section>
 
       {/* Section: Estadísticas de Impacto */}
-      <LandingStats {...LANDING_STATS} />
+      <LiveLandingStats />
 
       {/* Section: Funcionalidades */}
       <LandingFeatures {...LANDING_FEATURES} />
