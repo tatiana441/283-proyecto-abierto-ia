@@ -130,6 +130,14 @@ def detalle(expediente: int):
         (expediente, expediente),
     )
 
+    if riesgo:
+        from src.agents.analyst_agent import generar_insight
+
+        riesgo["ai_insight"] = generar_insight(
+            riesgo["principio_activo"], riesgo["mes"], riesgo["score"],
+            riesgo["nivel"], riesgo["tendencia"], riesgo["factores"],
+        )
+
     return {
         "perfil": perfil,
         "presentaciones": presentaciones,

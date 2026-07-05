@@ -1,0 +1,39 @@
+# Marco metodológico — CRISP-ML(Q)
+
+MediWatch sigue el ciclo CRISP-ML(Q) (Cross-Industry Standard Process for Machine Learning with Quality assurance). Mapeo de cada fase a lo ejecutado:
+
+## 1. Entendimiento del negocio y de los datos
+
+- Problema público: desabastecimiento de medicamentos vitales en Colombia (ver `planteamiento_problema.md`).
+- 4 datasets oficiales evaluados y verificados en vivo contra la API SODA (ver `fuentes_datos.md`).
+- **Hallazgo clave del EDA**: la columna IUM del CUM está 100% vacía → no existe llave directa entre catálogo y señal de escasez; se diseñó integración difusa por principio activo.
+- Decisión basada en datos sobre el histórico SISMED: se conserva porque es la única fuente de precio para el 46,2% del catálogo (63,3% de cobertura vs 29,9% del regulado).
+
+## 2. Preparación de los datos
+
+- Limpieza reproducible portada 1:1 de los notebooks de EDA del equipo (`notebooks/02_*`) a módulos probados (`src/data_pipeline/clean_*.py`): normalización de columnas, texto, fechas con sentinelas, deduplicación, validación ATC/CIE-10, banderas de calidad.
+- SISMED: corrección de encoding, precios 0 → no reportado, winsorización p99.5, agregación Mes × Expediente × TipoReporte (3,7M → 724k filas).
+- Integración en cascada: exacto → fuzzy (rapidfuzz token_sort_ratio ≥ 90) → por componente de combinaciones → sin match, con pre-limpieza de concentraciones y paréntesis. Métricas honestas en `reports/metricas_integracion.json` (27,5% de PAs, 32,4% de filas). El "sin match" restante refleja el fenómeno: los vitales no disponibles suelen carecer de registro vigente.
+- Pipeline completo reproducible con un comando: `python -m src.data_pipeline.run_all`.
+
+## 3. Ingeniería del modelo
+
+- **Score compuesto interpretable 0-100** (requisito de explicabilidad): suma ponderada de 5 componentes — frecuencia (0,35), tendencia (0,25), recencia (0,20), amplitud de solicitantes (0,10), urgencia clínica (0,10) — documentados en `config/risk_model_params.yaml` y expuestos por registro en `risk_scores.factores` (JSONB).
+- **Validación predictiva**: regresión logística (`class_weight=balanced`) sobre el panel PA × mes; label = "registra solicitudes en los 3 meses siguientes"; features construidas solo con información pasada (sin fuga temporal).
+
+## 4. Evaluación
+
+- Backtest temporal en 4 cortes (2024-06 → 2025-11): entrenar hasta el corte, probar en los 3 meses siguientes.
+- Resultados: **AUC promedio 0,787 · precision@20 = 0,988** (`models/predictive/metrics.json`; matriz de confusión y ROC en `reports/figures/`).
+- **Pruebas de equidad** (`tests/bias_tests/`): invarianza al nombre, no supresión de medicamentos huérfanos (un solo solicitante), no alarmismo con poca historia, techo de influencia de la urgencia, distribución real no degenerada.
+
+## 5. Despliegue
+
+- API FastAPI sobre Supabase (Postgres + RLS), asistente conversacional con tool-calling y trazabilidad (`sources[]`, prompts versionados en `models/llm_rag/`), frontend React.
+- Automatización: re-ingesta semanal desde datos.gov.co vía GitHub Actions (día 4).
+
+## 6. Monitoreo y calidad (Q)
+
+- 36+ tests (unitarios, integración, sesgo) ejecutados en CI en cada push.
+- `Changelog.md` como registro de versiones; métricas de integración y del modelo versionadas en el repo.
+- Limitaciones documentadas en `conclusiones.md` (día 4): SISMED histórico, cobertura del cruce, señal basada solo en importaciones excepcionales.

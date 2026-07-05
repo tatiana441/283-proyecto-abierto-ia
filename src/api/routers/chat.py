@@ -1,0 +1,46 @@
+"""Asistente conversacional con trazabilidad (citizen_agent vía OpenRouter)."""
+
+import json
+
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel, Field
+
+from src.agents import citizen_agent
+from src.api.db import get_conn
+
+router = APIRouter(prefix="/api/chat", tags=["chat"])
+
+
+class MensajeHistorial(BaseModel):
+    role: str
+    content: str
+
+
+class PreguntaChat(BaseModel):
+    pregunta: str = Field(..., min_length=3, max_length=1000)
+    historial: list[MensajeHistorial] = []
+    user_id: str | None = None
+
+
+@router.post("")
+def chat(body: PreguntaChat):
+    try:
+        resultado = citizen_agent.responder(
+            body.pregunta,
+            historial=[m.model_dump() for m in body.historial],
+        )
+    except RuntimeError as e:
+        raise HTTPException(503, f"Asistente no disponible: {e}") from e
+
+    try:
+        with get_conn() as conn:
+            conn.execute(
+                "INSERT INTO chat_logs (user_id, pregunta, respuesta, sources) VALUES (%s, %s, %s, %s)",
+                (body.user_id, body.pregunta, resultado["respuesta"],
+                 json.dumps(resultado["sources"], ensure_ascii=False)),
+            )
+            conn.commit()
+    except Exception as e:  # noqa: BLE001 — el log no debe tumbar la respuesta al usuario
+        print(f"[chat] no se pudo guardar el log: {e}")
+
+    return resultado

@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.db import ensure_unaccent
-from src.api.routers import medicamentos, riesgo, stats
+from src.api.routers import chat, medicamentos, riesgo, stats
 from src.common import load_env
 
 
@@ -43,6 +43,7 @@ app.add_middleware(
 app.include_router(medicamentos.router)
 app.include_router(riesgo.router)
 app.include_router(stats.router)
+app.include_router(chat.router)
 
 
 @app.get("/health", tags=["health"])
