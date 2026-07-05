@@ -1,0 +1,28 @@
+# Datos (nunca al repo — se regeneran con el pipeline; muestras van en tests/fixtures)
+data/raw/
+data/processed/
+data/external/
+
+# Credenciales
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Node / Vite
+frontend/node_modules/
+frontend/dist/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# SO / IDE
+.DS_Store
+Thumbs.db
+.vscode/

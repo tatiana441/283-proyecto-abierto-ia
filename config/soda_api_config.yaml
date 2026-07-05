@@ -1,0 +1,25 @@
+# Configuración de ingesta — API SODA de datos.gov.co
+# Verificado en vivo el 2026-07-05
+
+base_url: "https://www.datos.gov.co/resource"
+page_size: 50000
+timeout_seconds: 120
+# App token opcional (evita throttling): variable de entorno SODA_APP_TOKEN
+
+datasets:
+  cum:
+    resource_id: "i7cb-raxc"
+    descripcion: "Código Único de Medicamentos Vigentes — INVIMA (~157k filas)"
+    fallback_csv: "../Limpieza/CÓDIGO_ÚNICO_DE_MEDICAMENTOS_VIGENTES_20260604.csv"
+  vitales:
+    resource_id: "sdmr-tfmf"
+    descripcion: "Medicamentos Vitales No Disponibles — INVIMA (~10.5k filas)"
+    fallback_csv: "../Limpieza/MEDICAMENTOS_VITALES_NO_DISPONIBLES_20260604.csv"
+  precios_regulados:
+    resource_id: "nauz-qkjw"
+    descripcion: "Precios Máximos de Venta por CUM — CNPMDM Circular 19/2024 (~38.6k filas)"
+    fallback_csv: null
+
+sismed:
+  # Compactado con Spark por el equipo a partir de ~23M de registros SISMED
+  parquet_dir: "data/external/sismed_parquet"

@@ -1,0 +1,15 @@
+{
+  "descripcion": "Política de seguridad y gobernanza de datos de MediWatch",
+  "datos_personales": "Los 4 datasets son públicos y no contienen datos personales de pacientes. 'solicitante_importador' identifica personas jurídicas (IPS/importadores), no naturales.",
+  "rls": {
+    "catalogos_lectura_publica": [
+      "productos", "presentaciones", "principios_activos_cum",
+      "medicamentos_vitales", "solicitudes", "diagnosticos",
+      "match_principio_activo", "precios_mensuales", "precios_regulados", "risk_scores"
+    ],
+    "solo_autenticado": ["chat_logs"],
+    "escritura": "Solo el pipeline (service_role / conexión directa); ningún rol público tiene INSERT/UPDATE/DELETE"
+  },
+  "secretos": "Credenciales solo en variables de entorno (.env.local fuera del repo); service_role jamás en el frontend",
+  "trazabilidad": "El asistente conversacional responde únicamente con datos recuperados y cita dataset + registros (sources[])"
+}
