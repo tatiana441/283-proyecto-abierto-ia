@@ -132,7 +132,7 @@ export default function LandingStats({ badge, title, subtitle, stats }: LandingS
                   aria-live="polite"
                   aria-label={`${stat.value}${stat.suffix}`}
                 >
-                  {formatValue(counts[stat.id])}{stat.suffix}
+                  {formatValue(counts[stat.id] ?? 0)}{stat.suffix}
                 </span>
 
                 {/* Label */}
