@@ -78,6 +78,7 @@ interface ApiDetalle {
     principios_activos: string[];
     atc: string[] | null;
     descripcion_atc: string[] | null;
+    vias_administracion: string[] | null;
   };
   presentaciones: {
     cum_std: string;
@@ -147,7 +148,7 @@ export async function obtenerDetalle(expediente: number): Promise<MedicationDeta
     activeIngredient: titleCase(d.perfil.principios_activos.join(', ')),
     therapeuticCategory: titleCase(d.perfil.descripcion_atc?.[0] ?? null),
     pharmaceuticalForm: titleCase(d.presentaciones[0]?.formafarmaceutica ?? null),
-    administrationRoute: '—',
+    administrationRoute: titleCase(d.perfil.vias_administracion?.join(', ') ?? null) || '—',
     regulatoryStatus: d.perfil.estadoregistro?.toLowerCase().includes('vigente') ? 'Aprobado' : 'En revisión',
     atcCode: d.perfil.atc?.[0] ?? undefined,
     manufacturer: titleCase(d.perfil.titular),

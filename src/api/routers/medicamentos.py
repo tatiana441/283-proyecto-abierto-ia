@@ -59,7 +59,8 @@ def detalle(expediente: int):
                max(p.fechaexpedicion) AS fechaexpedicion, max(p.fechavencimiento) AS fechavencimiento,
                array_agg(DISTINCT pa.principioactivo) AS principios_activos,
                array_agg(DISTINCT pa.atc) FILTER (WHERE pa.atc IS NOT NULL) AS atc,
-               array_agg(DISTINCT pa.descripcionatc) FILTER (WHERE pa.descripcionatc IS NOT NULL) AS descripcion_atc
+               array_agg(DISTINCT pa.descripcionatc) FILTER (WHERE pa.descripcionatc IS NOT NULL) AS descripcion_atc,
+               array_agg(DISTINCT pa.viaadministracion) FILTER (WHERE pa.viaadministracion IS NOT NULL) AS vias_administracion
         FROM productos p
         JOIN principios_activos_cum pa ON pa.expediente = p.expediente
         WHERE p.expediente = %s

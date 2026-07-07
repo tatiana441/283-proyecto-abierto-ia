@@ -111,6 +111,7 @@ def tablas_intermedias_cum(df):
     principios_activos = df[[
         "cum", "expediente", "principioactivo", "concentracion",
         "cantidad_num", "unidadreferencia", "atc", "descripcionatc", "atc_valido",
+        "viaadministracion",
     ]].drop_duplicates()
 
     roles = df[["cum", "nombrerol", "tiporol", "modalidad"]].drop_duplicates()

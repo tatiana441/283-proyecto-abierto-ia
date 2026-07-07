@@ -27,7 +27,7 @@ TABLAS_DDL = {
     "principios_activos_cum": """CREATE TABLE principios_activos_cum (
         cum TEXT, expediente BIGINT, principioactivo TEXT, concentracion TEXT,
         cantidad DOUBLE PRECISION, unidadreferencia TEXT, atc TEXT,
-        descripcionatc TEXT, atc_valido BOOLEAN)""",
+        descripcionatc TEXT, atc_valido BOOLEAN, viaadministracion TEXT)""",
     "medicamentos_vitales": """CREATE TABLE medicamentos_vitales (
         ium TEXT, nombre_comercial TEXT, forma_farmaceutica TEXT,
         presentacion_comercial TEXT, principio_activo_1 TEXT,
@@ -113,6 +113,7 @@ MAPEOS = {
         "concentracion": "concentracion", "cantidad": "cantidad_num",
         "unidadreferencia": "unidadreferencia", "atc": "atc",
         "descripcionatc": "descripcionatc", "atc_valido": "atc_valido",
+        "viaadministracion": "viaadministracion",
     },
     "medicamentos_vitales": {c: c for c in [
         "ium", "nombre_comercial", "forma_farmaceutica", "presentacion_comercial",

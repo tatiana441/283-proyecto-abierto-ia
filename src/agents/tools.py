@@ -27,6 +27,7 @@ def buscar_medicamento(nombre: str, limite: int = 5):
         SELECT p.expediente, max(p.producto) AS producto, max(p.titular) AS titular,
                max(p.estadoregistro) AS estado,
                array_agg(DISTINCT pa.principioactivo) AS principios_activos,
+               array_agg(DISTINCT pa.viaadministracion) FILTER (WHERE pa.viaadministracion IS NOT NULL) AS vias_administracion,
                max(rs.score) AS riesgo_score
         FROM productos p
         JOIN principios_activos_cum pa ON pa.expediente = p.expediente
@@ -123,7 +124,7 @@ def estadisticas_generales():
 ESQUEMAS = [
     {"type": "function", "function": {
         "name": "buscar_medicamento",
-        "description": "Busca medicamentos en el catálogo CUM vigente por nombre comercial o principio activo. Devuelve expediente, producto, titular, estado y score de riesgo si existe.",
+        "description": "Busca medicamentos en el catálogo CUM vigente por nombre comercial o principio activo. Devuelve expediente, producto, titular, estado, vías de administración registradas ante INVIMA y score de riesgo si existe.",
         "parameters": {"type": "object", "properties": {
             "nombre": {"type": "string", "description": "Nombre o principio activo a buscar"},
             "limite": {"type": "integer", "default": 5}},
