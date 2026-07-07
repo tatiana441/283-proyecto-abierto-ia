@@ -30,6 +30,7 @@ MediWatch sigue el ciclo CRISP-ML(Q) (Cross-Industry Standard Process for Machin
 ## 5. Despliegue
 
 - API FastAPI sobre Supabase (Postgres + RLS), asistente conversacional con tool-calling y trazabilidad (`sources[]`, prompts versionados en `models/llm_rag/`), frontend React.
+- **Nota de arquitectura del agente**: el asistente implementa el mismo patrón que enseñan frameworks como LangChain/LangGraph (LLM que decide qué herramienta invocar, ejecuta consultas sobre datos externos y responde solo con el contexto recuperado), pero directamente sobre la API de OpenRouter. Se prefirió así porque el flujo es simple (una pasada de tool-calling, sin ciclos ni multi-agente), la trazabilidad queda explícita en el código (`sources[]` + `chat_logs`) y se evitan dependencias adicionales; LangGraph aportaría valor si el flujo creciera a grafos cíclicos o aprobación humana intermedia.
 - Automatización: re-ingesta semanal desde datos.gov.co vía GitHub Actions (día 4).
 
 ## 6. Monitoreo y calidad (Q)
