@@ -8,6 +8,8 @@ import AccessibilityToggle from './components/shared/AccessibilityToggle';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
+import RecoverPage from './pages/RecoverPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import HomePage from './pages/HomePage';
 import ResultsPage from './pages/ResultsPage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -116,6 +118,15 @@ export default function App() {
             <SignUpPage />
           </PublicRoute>
         } />
+
+        {/* Recuperación de contraseña (restablecer NO usa PublicRoute:
+            el enlace del correo crea sesión y PublicRoute la rebotaría) */}
+        <Route path="/recuperar" element={
+          <PublicRoute>
+            <RecoverPage />
+          </PublicRoute>
+        } />
+        <Route path="/restablecer" element={<ResetPasswordPage />} />
         
         {/* App Dashboard */}
         <Route path="/dashboard" element={

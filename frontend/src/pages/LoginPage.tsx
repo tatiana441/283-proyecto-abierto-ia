@@ -64,6 +64,9 @@ export default function LoginPage() {
           ¿No tienes cuenta?{' '}
           <Link to="/sign-up" className="text-primary font-semibold hover:underline">Regístrate</Link>
         </p>
+        <p className="text-sm text-slate-500 mt-2 text-center">
+          <Link to="/recuperar" className="text-primary font-semibold hover:underline">¿Olvidaste tu contraseña?</Link>
+        </p>
       </div>
     </main>
   );
