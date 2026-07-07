@@ -126,12 +126,15 @@ export const PRICING = {
   sourceLabel:        'Fuente: Ministerio de Salud — Circular de precios',
   notRegulatedValue:  'No regulado',
   notRegulatedMeta:   'Este producto no está en la Circular de precios máximos vigente',
+  referenceTitle:     'Precio de referencia vigente por unidad · Termómetro Clicsalud (MinSalud, oct 2024)',
   educationBody:
-    'El "último precio reportado" viene de SISMED, el sistema donde laboratorios y EPS reportan sus ventas; ' +
-    'la serie disponible cubre 2017 a mediados de 2019, por eso la gráfica llega hasta ahí (es una referencia ' +
-    'histórica, no el precio de farmacia de hoy). El "precio máximo regulado" sí es vigente: es el techo fijado ' +
-    'por la Comisión Nacional de Precios (Circular 19 de 2024), que solo cubre los mercados intervenidos — ' +
-    'alrededor del 30% de los productos. Si dice "No regulado", ese producto no tiene techo de precio.',
+    'El "precio de referencia por unidad" es el más actual: viene del Termómetro de Precios de Clicsalud ' +
+    '(Ministerio de Salud, corte octubre 2024) e indica cuánto debería costar cada tableta o ampolla en el ' +
+    'canal comercial (farmacias) e institucional (EPS/hospitales). El "precio máximo regulado" es el techo ' +
+    'legal fijado por la Comisión Nacional de Precios (Circular 19 de 2024), que solo cubre mercados ' +
+    'intervenidos (~30% de los productos): si dice "No regulado", ese producto no tiene techo. La gráfica ' +
+    'histórica viene de SISMED, donde la industria reporta sus ventas; la serie pública cubre 2017 a mediados ' +
+    'de 2019 — el Estado no ha publicado precios transaccionales más recientes.',
 };
 
 // ── Timeline ─────────────────────────────────────────────────────────────────

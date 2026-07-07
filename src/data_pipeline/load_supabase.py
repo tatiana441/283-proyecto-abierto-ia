@@ -54,6 +54,10 @@ TABLAS_DDL = {
         pmax_institucional DOUBLE PRECISION, pmax_comercial_mayorista DOUBLE PRECISION,
         pmax_comercial_final DOUBLE PRECISION, margen_para_ips DOUBLE PRECISION,
         circular TEXT, fecha_inicio_vigencia DATE)""",
+    "precios_referencia": """CREATE TABLE precios_referencia (
+        expediente BIGINT, principio_activo TEXT, concentracion TEXT,
+        nombre_comercial TEXT, fabricante TEXT, canal TEXT,
+        unidad_dispensacion TEXT, precio_unidad DOUBLE PRECISION, factor_precio TEXT)""",
 }
 
 INDICES = {
@@ -70,6 +74,7 @@ INDICES = {
     ],
     "precios_mensuales": ["CREATE INDEX ON precios_mensuales (expediente, mes)"],
     "precios_regulados": ["CREATE INDEX ON precios_regulados (expediente)"],
+    "precios_referencia": ["CREATE INDEX ON precios_referencia (expediente)"],
     "match_principio_activo": ["CREATE INDEX ON match_principio_activo (nombre_vitales)"],
 }
 
@@ -128,6 +133,9 @@ MAPEOS = {
         "cantidad_unidad_medida", "unidad_de_medida", "pmax_institucional",
         "pmax_comercial_mayorista", "pmax_comercial_final", "margen_para_ips",
         "circular", "fecha_inicio_vigencia"]},
+    "precios_referencia": {c: c for c in [
+        "expediente", "principio_activo", "concentracion", "nombre_comercial",
+        "fabricante", "canal", "unidad_dispensacion", "precio_unidad", "factor_precio"]},
 }
 
 

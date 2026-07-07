@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { AlternativeMedication } from '../../types/medication';
 import { RELATED } from '../../constants/copy';
 
@@ -88,12 +89,13 @@ export default function RelatedMedications({ alternatives }: RelatedMedicationsP
                   <span className="truncate">{alt.similarity}</span>
                 </div>
 
-                <button
-                  className="w-full bg-white border border-slate-200 text-primary text-sm font-semibold py-2 px-3 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all duration-150 cursor-pointer"
+                <Link
+                  to={`/medicamento/${alt.id}`}
+                  className="w-full block text-center no-underline bg-white border border-slate-200 text-primary text-sm font-semibold py-2 px-3 rounded-lg hover:bg-primary hover:text-white hover:border-primary transition-all duration-150 cursor-pointer"
                   aria-label={`Ver detalles de ${alt.name}`}
                 >
                   Ver detalles
-                </button>
+                </Link>
               </li>
             ))}
           </ul>

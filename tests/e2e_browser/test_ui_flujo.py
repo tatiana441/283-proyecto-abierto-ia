@@ -13,6 +13,7 @@ Si SUPABASE_SERVICE_ROLE_KEY está disponible, el usuario se crea solo.
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -162,6 +163,15 @@ def test_panel_que_es_esto_riesgo():
     assert estado["panel"], "el panel educativo de riesgo no se abrió"
     assert "INVIMA" in estado["texto"], "el panel no muestra la explicación esperada"
     ab("screenshot", str(EVIDENCIA / "04_panel_educativo.png"))
+
+
+def test_alternativa_ver_detalles_navega():
+    """'Ver detalles' de una alternativa debe llevar a la página de ese producto."""
+    ab("click", "a[aria-label^='Ver detalles']")
+    ab("wait", "1500")
+    url = ab("get", "url")
+    assert re.search(r"/medicamento/\d+", url), f"no navegó al detalle de la alternativa: {url}"
+    ab("screenshot", str(EVIDENCIA / "06_alternativa.png"))
 
 
 def test_alto_riesgo_sin_errores():

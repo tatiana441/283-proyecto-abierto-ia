@@ -31,11 +31,19 @@ export interface PricePoint {
   price: number;  // in COP
 }
 
+export interface ReferencePrice {
+  canal: string;                 // Comercial | Institucional
+  precio: number;                // COP por unidad de dispensación
+  unidad?: string | null;        // tableta, ampolla, ml, ...
+  producto?: string | null;
+}
+
 export interface PricingData {
   averageMarketPrice: number;    // COP
   maxRegulatedPrice: number;     // COP
   currency: 'COP';
   priceHistory: PricePoint[];
+  referencePrices?: ReferencePrice[]; // Termómetro Clicsalud (MinSalud, oct 2024)
 }
 
 export interface TimelineEvent {

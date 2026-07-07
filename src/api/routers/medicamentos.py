@@ -115,6 +115,11 @@ def detalle(expediente: int):
         "FROM precios_mensuales WHERE expediente = %s ORDER BY mes, tipo_reporte",
         (expediente,),
     )
+    precios_referencia = query(
+        "SELECT canal, precio_unidad, unidad_dispensacion, nombre_comercial, fabricante, factor_precio "
+        "FROM precios_referencia WHERE expediente = %s ORDER BY canal, precio_unidad LIMIT 20",
+        (expediente,),
+    )
 
     alternativas = query(
         f"""
@@ -146,7 +151,9 @@ def detalle(expediente: int):
         "precios": {
             "regulado_vigente": precios_regulados,
             "historico_sismed": serie_precios,
-            "nota": "Serie SISMED 2017-2019 (histórico de referencia); regulado = Circular CNPMDM vigente",
+            "referencia_2024": precios_referencia,
+            "nota": "Serie SISMED 2017-2019 (histórico); regulado = Circular CNPMDM vigente; "
+                    "referencia por unidad = Termómetro Clicsalud, MinSalud (oct 2024)",
         },
         "alternativas": alternativas,
     }

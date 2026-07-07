@@ -89,7 +89,10 @@ export default function ResultsPage() {
   }
 
   const { profile, risk, pricing, timeline, alternatives } = estado.data;
-  const hayPrecios = pricing.priceHistory.length > 0 || pricing.maxRegulatedPrice > 0;
+  const hayPrecios =
+    pricing.priceHistory.length > 0 ||
+    pricing.maxRegulatedPrice > 0 ||
+    (pricing.referencePrices?.length ?? 0) > 0;
 
   return (
     <main id="main-content" className="py-8 pb-16" aria-label={`Resultado: ${profile.name}`}>
@@ -137,7 +140,7 @@ export default function ResultsPage() {
               <>
                 <PricingSection pricing={pricing} />
                 <p className="text-xs text-slate-400 -mt-4 px-2">
-                  Histórico de precios: SISMED 2017-2019 (referencia). Precio máximo: Circular 19 de 2024 (CNPMDM).
+                  Referencia por unidad: Termómetro Clicsalud, MinSalud (oct 2024). Precio máximo: Circular 19 de 2024 (CNPMDM). Histórico: SISMED 2017-2019.
                 </p>
               </>
             ) : (

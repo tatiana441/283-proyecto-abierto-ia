@@ -19,6 +19,10 @@ datasets:
     resource_id: "nauz-qkjw"
     descripcion: "Precios Máximos de Venta por CUM — CNPMDM Circular 19/2024 (~38.6k filas)"
     fallback_csv: null
+  termometro:
+    resource_id: "n4dj-8r7k"
+    descripcion: "Clicsalud — Termómetro de Precios de Medicamentos (MinSalud, corte oct-2024, ~12.5k filas)"
+    fallback_csv: null
 
 sismed:
   # Compactado con Spark por el equipo a partir de ~23M de registros SISMED

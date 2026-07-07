@@ -13,7 +13,7 @@ function formatCOP(n: number): string {
 }
 
 export default function PricingSection({ pricing }: PricingSectionProps) {
-  const { averageMarketPrice, maxRegulatedPrice, currency, priceHistory } = pricing;
+  const { averageMarketPrice, maxRegulatedPrice, currency, priceHistory, referencePrices } = pricing;
   const [showInfo, setShowInfo] = useState(false);
 
   // Solo el 30% del catálogo tiene techo regulado (Circular CNPMDM); sin él no hay comparación
@@ -114,6 +114,38 @@ export default function PricingSection({ pricing }: PricingSectionProps) {
             </div>
           ))}
         </div>
+
+        {/* Precio de referencia vigente por unidad (Clicsalud oct-2024) */}
+        {referencePrices && referencePrices.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold tracking-[0.06em] uppercase text-slate-400 mb-3">
+              {PRICING.referenceTitle}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {['Comercial', 'Institucional'].map((canal) => {
+                const delCanal = referencePrices.filter((r) => r.canal === canal);
+                if (delCanal.length === 0) return null;
+                const precios = delCanal.map((r) => r.precio);
+                const min = Math.min(...precios);
+                const max = Math.max(...precios);
+                const unidad = delCanal[0].unidad ?? 'unidad';
+                return (
+                  <div key={canal} className="p-4 rounded-lg border bg-slate-50 border-slate-200 flex flex-col gap-1">
+                    <span className="text-xs font-semibold tracking-wider uppercase text-slate-400 leading-none">
+                      Canal {canal.toLowerCase()}
+                    </span>
+                    <span className="text-lg font-bold tracking-[-0.02em] text-slate-900">
+                      {min === max ? formatCOP(min) : `${formatCOP(min)} – ${formatCOP(max)}`}
+                    </span>
+                    <span className="text-xs text-slate-400">
+                      por {unidad.toLowerCase()} · {delCanal.length} presentación{delCanal.length > 1 ? 'es' : ''}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Recharts sparkline */}
         {priceHistory.length > 0 && (

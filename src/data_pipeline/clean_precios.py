@@ -126,3 +126,38 @@ def limpiar_precios_regulados(df_raw: pd.DataFrame) -> pd.DataFrame:
     df.to_csv(out / "precios_regulados.csv", index=False, encoding="utf-8")
     print(f"[clean_precios] precios_regulados: {len(df):,} filas")
     return df
+
+
+def limpiar_termometro(df_raw: pd.DataFrame) -> pd.DataFrame:
+    """Limpia el Termómetro de Precios de Clicsalud (n4dj-8r7k).
+
+    Precio de referencia VIGENTE por unidad de dispensación (MinSalud,
+    corte oct-2024), canales Comercial e Institucional. Cruce directo
+    con el catálogo por expediente INVIMA.
+    """
+    df = df_raw.copy()
+    df.columns = [c.strip().lower() for c in df.columns]
+    df = df.rename(columns={
+        "expediente_invima": "expediente",
+        "precio_por_tableta": "precio_unidad",
+        "unidad_de_dispensacion": "unidad_dispensacion",
+        "factoresprecio": "factor_precio",
+    })
+
+    df["expediente"] = pd.to_numeric(df["expediente"], errors="coerce").astype("Int64")
+    df["precio_unidad"] = pd.to_numeric(df["precio_unidad"], errors="coerce")
+    df["canal"] = df["canal"].astype("string").str.strip().str.title()
+    df = df.dropna(subset=["expediente", "precio_unidad"])
+    df = df[df["precio_unidad"] > 0]
+
+    cols = [
+        "expediente", "principio_activo", "concentracion", "nombre_comercial",
+        "fabricante", "canal", "unidad_dispensacion", "precio_unidad", "factor_precio",
+    ]
+    df = df[[c for c in cols if c in df.columns]].drop_duplicates()
+
+    out = DATA_PROCESSED / "precios"
+    out.mkdir(parents=True, exist_ok=True)
+    df.to_csv(out / "precios_referencia.csv", index=False, encoding="utf-8")
+    print(f"[clean_precios] termometro: {len(df):,} filas de referencia (Clicsalud oct-2024)")
+    return df

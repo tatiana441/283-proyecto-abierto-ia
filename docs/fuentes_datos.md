@@ -32,6 +32,13 @@ Todos los datasets provienen del portal oficial de datos abiertos de Colombia (d
 - **Contenido:** precio máximo institucional y comercial por CUM, mercado relevante, margen IPS, circular y vigencia.
 - **Rol en MediWatch:** precio techo regulado **vigente** por producto (cruza por expediente: 30,1% del catálogo, esperable porque la regulación solo cubre mercados intervenidos).
 
+## 5. Clicsalud — Termómetro de Precios de Medicamentos (MinSalud)
+
+- **Resource ID:** `n4dj-8r7k` · [API](https://www.datos.gov.co/resource/n4dj-8r7k.json)
+- **Filas:** 12.534 (corte **octubre 2024** — la fuente de precios más reciente publicada).
+- **Contenido:** precio de referencia por unidad de dispensación (tableta, ampolla, ml) por canal comercial e institucional, con expediente INVIMA, principio activo, marca y fabricante.
+- **Rol en MediWatch:** precio de referencia **vigente** por unidad; cruza directo por expediente (66,6% del catálogo vigente — la mayor cobertura de precio actual). Se ingesta por SODA y entra al cron semanal.
+
 ## Diagrama de relaciones
 
 ```

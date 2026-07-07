@@ -28,11 +28,14 @@ def main() -> None:
     print("\n=== 3/5 LIMPIEZA VITALES ===")
     tablas_vit = clean_vitales.run(crudos["vitales"])
 
-    print("\n=== 4/5 PRECIOS (SISMED + regulados) ===")
+    print("\n=== 4/5 PRECIOS (SISMED + regulados + referencia Clicsalud) ===")
     precios_mensuales = clean_precios.limpiar_sismed()
     precios_regulados = None
     if "precios_regulados" in crudos:
         precios_regulados = clean_precios.limpiar_precios_regulados(crudos["precios_regulados"])
+    precios_referencia = None
+    if "termometro" in crudos:
+        precios_referencia = clean_precios.limpiar_termometro(crudos["termometro"])
 
     print("\n=== 5/5 INTEGRACIÓN ===")
     puente = integrate.run(tablas_vit["base_limpia"], tablas_cum["principios_activos_cum"])
@@ -51,6 +54,7 @@ def main() -> None:
             "match_principio_activo": puente,
             "precios_mensuales": precios_mensuales,
             "precios_regulados": precios_regulados,
+            "precios_referencia": precios_referencia,
         }
         load_supabase.run(tablas)
 

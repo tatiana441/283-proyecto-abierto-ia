@@ -96,6 +96,10 @@ interface ApiDetalle {
   precios: {
     regulado_vigente: { pmax_institucional: number | null; pmax_comercial_final: number | null; circular: string | null }[];
     historico_sismed: { mes: string; tipo_reporte: string; precio_promedio: number | null }[];
+    referencia_2024?: {
+      canal: string; precio_unidad: number | null; unidad_dispensacion: string | null;
+      nombre_comercial: string | null; fabricante: string | null; factor_precio: string | null;
+    }[];
     nota: string;
   };
   alternativas: { expediente: number; producto: string | null; titular: string | null }[];
@@ -179,11 +183,20 @@ export async function obtenerDetalle(expediente: number): Promise<MedicationDeta
   }));
   const ultimoPrecio = priceHistory.length ? priceHistory[priceHistory.length - 1].price : 0;
   const regulado = d.precios.regulado_vigente[0];
+  const referencePrices = (d.precios.referencia_2024 ?? [])
+    .filter((r) => r.precio_unidad != null && r.precio_unidad > 0)
+    .map((r) => ({
+      canal: r.canal,
+      precio: Math.round(r.precio_unidad!),
+      unidad: r.unidad_dispensacion,
+      producto: r.nombre_comercial,
+    }));
   const pricing: PricingData = {
     averageMarketPrice: ultimoPrecio,
     maxRegulatedPrice: Math.round(regulado?.pmax_comercial_final ?? regulado?.pmax_institucional ?? 0),
     currency: 'COP',
     priceHistory,
+    referencePrices,
   };
 
   const timeline: TimelineEvent[] = d.historial_solicitudes.slice(0, 8).map((h, i) => ({
