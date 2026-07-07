@@ -1,12 +1,12 @@
 {
-  "principios_activos_vitales": 601,
+  "principios_activos_vitales": 611,
   "por_metodo": {
-    "sin_match": 436,
+    "sin_match": 446,
     "exacto": 136,
     "fuzzy": 26,
     "exacto_componente": 3
   },
-  "pct_con_match": 27.5,
-  "pct_filas_solicitudes_cruzan": 32.4,
+  "pct_con_match": 27.0,
+  "pct_filas_solicitudes_cruzan": 31.8,
   "umbral_fuzzy": 90
 }
