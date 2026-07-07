@@ -143,17 +143,9 @@ export default function App() {
           </ProtectedRoute>
         } />
         
-        {/* Placeholders */}
-        <Route path="/buscar" element={
-          <ProtectedRoute>
-            <PlaceholderPage title="Búsqueda de Medicamentos" />
-          </ProtectedRoute>
-        } />
-        <Route path="/alertas" element={
-          <ProtectedRoute>
-            <PlaceholderPage title="Alertas de Desabastecimiento" />
-          </ProtectedRoute>
-        } />
+        {/* Rutas heredadas del prototipo: la funcionalidad vive en dashboard y alto-riesgo */}
+        <Route path="/buscar" element={<Navigate to="/dashboard#buscar" replace />} />
+        <Route path="/alertas" element={<Navigate to="/alto-riesgo" replace />} />
         <Route path="/alto-riesgo" element={
           <ProtectedRoute>
             <AltoRiesgoPage />

@@ -28,13 +28,13 @@ export default function FeaturedBanner() {
 
             {/* Description */}
             <p className="text-sm md:text-[15px] text-slate-300 leading-relaxed mb-8 max-w-[540px]">
-              Nuestra red neuronal analiza patrones de prescripción y reportes ciudadanos para prevenir eventos adversos antes de que ocurran. Ciencia de datos al servicio de la vida.
+              Analizamos las solicitudes de importación de urgencia ante INVIMA para anticipar el desabastecimiento de medicamentos, con un modelo validado sobre datos abiertos. Ciencia de datos al servicio de la vida.
             </p>
 
             {/* Button */}
             <div>
               <a
-                href="/buscar"
+                href="/alto-riesgo"
                 className="inline-flex items-center gap-2 bg-[#005cbf] hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm px-6 py-3.5 rounded-full no-underline transition-all duration-200 cursor-pointer shadow-md hover:shadow-lg"
               >
                 Conocer más sobre el sistema

@@ -19,7 +19,7 @@ export default function HeroSearch() {
   };
 
   return (
-    <section className="relative overflow-hidden py-20" aria-label="Búsqueda de medicamentos">
+    <section id="buscar" className="relative overflow-hidden py-20" aria-label="Búsqueda de medicamentos">
       <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-6 text-center">
 
         <h1 className="text-[clamp(2rem,5vw,3rem)] font-bold tracking-[-0.03em] leading-[1.15] mb-5 max-w-[780px] mx-auto text-blue-950">

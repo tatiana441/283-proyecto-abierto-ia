@@ -32,8 +32,8 @@ export default function RiskAndPricingOverview() {
                   <span className="text-xs md:text-sm font-medium text-slate-700">
                     Alternativas Recomendadas
                   </span>
-                  <Link 
-                    to="/alertas" 
+                  <Link
+                    to="/alto-riesgo"
                     className="text-xs md:text-sm font-bold text-[#005cbf] hover:text-blue-700 hover:underline transition-colors no-underline cursor-pointer"
                   >
                     Ver lista

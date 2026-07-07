@@ -30,15 +30,15 @@ export const HOME = {
       title:       'Búsqueda de Medicamentos',
       description: 'Consulta disponibilidad y riesgo por nombre o principio activo.',
       icon:        '🔍',
-      href:        '/buscar',
+      href:        '/dashboard#buscar',
       color:       'primary',
     },
     {
       id:          'alerts',
       title:       'Alertas de Escasez',
-      description: 'Revisa las alertas activas de desabastecimiento en tiempo real.',
+      description: 'Revisa los medicamentos en riesgo alto o crítico ahora mismo.',
       icon:        '🚨',
-      href:        '/alertas',
+      href:        '/alto-riesgo',
       color:       'high',
     },
     {
