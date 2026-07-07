@@ -87,6 +87,9 @@ CREATE TABLE IF NOT EXISTS risk_scores (
 CREATE TABLE IF NOT EXISTS chat_logs (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, user_id UUID,
     pregunta TEXT, respuesta TEXT, sources JSONB, creado_en TIMESTAMPTZ DEFAULT now());
+CREATE TABLE IF NOT EXISTS suscripciones (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, user_id UUID,
+    canal TEXT, contacto TEXT, alertas TEXT, creado_en TIMESTAMPTZ DEFAULT now());
 """
 
 CATALOGOS_PUBLICOS = list(TABLAS_DDL.keys()) + ["risk_scores"]
@@ -171,6 +174,14 @@ def aplicar_rls(cur) -> None:
         "USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());"
     )
     cur.execute("GRANT SELECT, INSERT ON chat_logs TO authenticated;")
+
+    cur.execute("ALTER TABLE suscripciones ENABLE ROW LEVEL SECURITY;")
+    cur.execute('DROP POLICY IF EXISTS "suscripcion_propia" ON suscripciones;')
+    cur.execute(
+        'CREATE POLICY "suscripcion_propia" ON suscripciones FOR ALL TO authenticated '
+        "USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());"
+    )
+    cur.execute("GRANT SELECT, INSERT ON suscripciones TO authenticated;")
 
 
 def run(tablas: dict[str, pd.DataFrame | None]) -> None:

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NOTIFICATIONS } from '../../constants/copy';
+import { supabase } from '../../lib/supabase';
 
 type Channel = 'email' | 'whatsapp';
 
@@ -23,6 +24,7 @@ export default function NotificationsSubscription() {
   const [contact,   setContact]   = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading,   setLoading]   = useState(false);
+  const [error,     setError]     = useState<string | null>(null);
 
   const toggleAlert = (id: string) =>
     setSelected(prev => {
@@ -35,11 +37,24 @@ export default function NotificationsSubscription() {
       return next;
     });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!contact.trim() || selected.size === 0) return;
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSubmitted(true); }, 1100);
+    setError(null);
+    const { data: { user } } = await supabase.auth.getUser();
+    const { error: err } = await supabase.from('suscripciones').insert({
+      user_id: user?.id,
+      canal: channel,
+      contacto: contact.trim(),
+      alertas: [...selected].join(','),
+    });
+    setLoading(false);
+    if (err) {
+      setError('No pudimos guardar tu suscripción. Intenta de nuevo en unos segundos.');
+      return;
+    }
+    setSubmitted(true);
   };
 
   if (submitted) {
@@ -177,6 +192,12 @@ export default function NotificationsSubscription() {
             </span>
           ) : NOTIFICATIONS.subscribeButton}
         </button>
+
+        {error && (
+          <p className="text-xs text-high-text bg-high-bg border border-high rounded-lg px-3 py-2 mt-1" role="alert">
+            {error}
+          </p>
+        )}
       </form>
     </section>
   );

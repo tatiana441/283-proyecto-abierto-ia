@@ -51,16 +51,6 @@ export const HOME = {
     },
   ],
 
-  bannerTitle:      'Monitoreo de riesgo de medicamentos impulsado por IA para Colombia',
-  bannerSubtitle:   'Analizamos más de 15.000 registros sanitarios del INVIMA para darte información oportuna y confiable.',
-  bannerCta:        'Conocer más',
-
-  statsLabel:       'En tiempo real',
-  stats: [
-    { value: '15.240', label: 'Registros monitoreados' },
-    { value: '342',   label: 'Alertas activas'         },
-    { value: '98%',   label: 'Precisión del modelo IA' },
-  ],
 };
 
 // ── Risk Analysis Section ────────────────────────────────────────────────────
@@ -277,39 +267,40 @@ export const LANDING_FEATURES = {
 export const LANDING_STATS = {
   badge: 'Impacto Real',
   title: 'Por qué importa MediWatch',
-  subtitle: 'Miles de medicamentos monitoreados de forma continua para que nunca te enfrentes a un desabastecimiento inesperado.',
+  subtitle: 'Cifras en vivo desde datos.gov.co: el catálogo completo de INVIMA y cada autorización de importación de urgencia, actualizados cada semana.',
+  // Valores de respaldo (corte 2026-07) — la página los reemplaza con /api/stats en vivo
   stats: [
     {
-      id: 'monitored',
-      value: 14800,
-      suffix: '+',
-      label: 'Medicamentos monitoreados',
-      sublabel: 'Productos farmacéuticos activos',
+      id: 'productos',
+      value: 9655,
+      suffix: '',
+      label: 'Productos vigentes monitoreados',
+      sublabel: 'Catálogo CUM de INVIMA, actualizado desde datos.gov.co',
       color: 'blue',
     },
     {
-      id: 'critical',
-      value: 312,
+      id: 'solicitudes',
+      value: 9601,
       suffix: '',
-      label: 'Medicamentos críticos',
-      sublabel: 'Con seguimiento reforzado',
+      label: 'Autorizaciones de importación analizadas',
+      sublabel: 'Medicamentos Vitales No Disponibles (señal de escasez)',
       color: 'red',
     },
     {
-      id: 'datasets',
-      value: 8,
+      id: 'monitoreados',
+      value: 601,
       suffix: '',
-      label: 'Conjuntos de datos',
-      sublabel: 'Fuentes oficiales integradas',
-      color: 'green',
+      label: 'Principios activos con score de riesgo',
+      sublabel: 'Modelo validado con backtest temporal',
+      color: 'blue',
     },
     {
-      id: 'precision',
-      value: 99,
-      suffix: '%',
-      label: 'Precisión de la IA',
-      sublabel: 'Confianza en el análisis de riesgo',
-      color: 'blue',
+      id: 'riesgo',
+      value: 156,
+      suffix: '',
+      label: 'En riesgo alto o crítico',
+      sublabel: 'Score ≥ 50: señales recurrentes y recientes de escasez',
+      color: 'green',
     },
   ],
 };
@@ -320,29 +311,29 @@ export const LANDING_DEMO = {
   title: 'Ejemplo de monitoreo de medicamento',
   description: 'Así es un perfil de medicamento típico en MediWatch — claro, fácil de leer y diseñado para darte la información correcta de un vistazo.',
   checkItems: [
-    'Disponibilidad actual y estado del stock',
-    'Evaluación del riesgo de desabastecimiento con IA',
-    'Historial de monitoreo cronológico',
-    'Alternativas comparables si es necesario',
+    'Score de riesgo 0-100 con sus factores explicados',
+    'Predicción IA validada: probabilidad de escasez a 3 meses',
+    'Precios de 3 fuentes oficiales (referencia 2024, techo regulado e histórico)',
+    'Alternativas con el mismo principio activo',
   ],
   ctaLabel: 'Ver perfil completo',
-  // Mock card data
+  // Ejemplo ilustrativo con la forma real del perfil (datos como los de lidocaína, corte 2026-05)
   card: {
     label: 'Perfil del medicamento',
-    name: 'Losartán',
-    description: 'Antagonista del receptor de angiotensina II',
+    name: 'Lidocaína Clorhidrato',
+    description: 'Anestésico local — con solicitudes de importación de urgencia',
     badges: [
-      { text: 'En seguimiento', variant: 'blue' },
-      { text: 'Riesgo medio',   variant: 'amber' },
+      { text: 'Vigilancia activa', variant: 'blue' },
+      { text: 'Riesgo crítico',    variant: 'amber' },
     ],
     stats: [
-      { value: '72%',  label: 'Disponibilidad', color: 'amber' },
-      { value: '3',    label: 'Alertas (30d)',   color: 'red'   },
-      { value: '+4,2%', label: 'Tendencia precio', color: 'red' },
+      { value: '89,7', label: 'Score de riesgo',    color: 'red'   },
+      { value: '61',   label: 'Solicitudes (12 m)', color: 'amber' },
+      { value: '100%', label: 'Predicción IA (3 m)', color: 'red'  },
     ],
-    trendLabel: 'Tendencia de disponibilidad — 30 días',
+    trendLabel: 'Solicitudes de importación — últimos 12 meses',
     aiTitle: 'Análisis IA',
-    aiText: '"Las tendencias recientes indican un aumento de la actividad de monitoreo. El suministro de los fabricantes principales muestra variabilidad. Considera hablar con tu farmacéutico sobre alternativas."',
+    aiText: '"El principio activo registra 61 solicitudes de importación excepcional de 19 solicitantes en 12 meses, con tendencia al alza. Los factores que más pesan son la frecuencia y la tendencia reciente. Fuente: INVIMA — Vitales No Disponibles."',
   },
 };
 
