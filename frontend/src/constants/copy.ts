@@ -110,7 +110,7 @@ export const PRICING = {
   sectionTitle:       'Información de Precios',
   averageLabel:       'Último precio reportado (SISMED)',
   regulatedLabel:     'Precio máximo regulado',
-  trendLabel:         'Tendencia histórica de precios · SISMED 2017–2019',
+  trendLabel:         'Línea de tiempo de precios · SISMED 2017–2019 + referencia vigente (punto verde, oct 2024)',
   currencyLabel:      'COP',
   noDataLabel:        'Sin datos disponibles',
   sourceLabel:        'Fuente: Ministerio de Salud — Circular de precios',

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid,
+  ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, ReferenceLine,
 } from 'recharts';
 import type { PricingData } from '../../types/medication';
@@ -18,6 +18,16 @@ export default function PricingSection({ pricing }: PricingSectionProps) {
 
   // Solo el 30% del catálogo tiene techo regulado (Circular CNPMDM); sin él no hay comparación
   const hayTecho  = maxRegulatedPrice > 0;
+
+  // Punto vigente al final de la serie: mediana de la referencia Clicsalud (oct-2024),
+  // marcado como serie aparte para que la línea de tiempo no termine en 2019
+  const preciosRef = (referencePrices ?? []).map((r) => r.precio).sort((a, b) => a - b);
+  const medianaRef = preciosRef.length
+    ? preciosRef[Math.floor(preciosRef.length / 2)]
+    : null;
+  const datosGrafica = medianaRef !== null && priceHistory.length > 0
+    ? [...priceHistory, { period: 'ref. oct 2024', referencia: medianaRef } as never]
+    : priceHistory;
   const pctOfMax  = hayTecho ? Math.round((averageMarketPrice / maxRegulatedPrice) * 100) : null;
   const aboveMax  = hayTecho && averageMarketPrice > maxRegulatedPrice;
 
@@ -155,7 +165,7 @@ export default function PricingSection({ pricing }: PricingSectionProps) {
           </p>
           <div className="h-[180px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={priceHistory} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
+              <ComposedChart data={datosGrafica} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
                 <defs>
                   <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%"  stopColor="hsl(213,85%,42%)" stopOpacity={0.18} />
@@ -170,7 +180,10 @@ export default function PricingSection({ pricing }: PricingSectionProps) {
                   axisLine={false} tickLine={false} dx={-4}
                 />
                 <Tooltip
-                  formatter={(v: unknown) => [formatCOP(v as number), 'Precio']}
+                  formatter={(v: unknown, name: unknown) => [
+                    formatCOP(v as number),
+                    name === 'referencia' ? 'Referencia Clicsalud oct-2024 (por unidad)' : 'Precio SISMED',
+                  ]}
                   contentStyle={{
                     background: 'white', border: '1px solid hsl(214,20%,90%)',
                     borderRadius: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
@@ -195,7 +208,16 @@ export default function PricingSection({ pricing }: PricingSectionProps) {
                   dot={{ r: 4, fill: 'white', stroke: 'hsl(213,85%,42%)', strokeWidth: 2 }}
                   activeDot={{ r: 6, fill: 'hsl(213,85%,42%)', stroke: 'white', strokeWidth: 2 }}
                 />
-              </AreaChart>
+                {/* Punto vigente (Clicsalud) — serie aparte, no continúa la línea SISMED */}
+                <Line
+                  dataKey="referencia"
+                  stroke="hsl(160,84%,30%)"
+                  strokeWidth={0}
+                  dot={{ r: 6, fill: 'hsl(160,84%,35%)', stroke: 'white', strokeWidth: 2 }}
+                  activeDot={{ r: 7, fill: 'hsl(160,84%,30%)', stroke: 'white', strokeWidth: 2 }}
+                  isAnimationActive={false}
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
         </div>
