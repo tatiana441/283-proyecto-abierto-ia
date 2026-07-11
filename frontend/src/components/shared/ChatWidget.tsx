@@ -17,6 +17,66 @@ const SUGERENCIAS = [
   '¿Cuánto cuesta la lidocaína?',
 ];
 
+function parseBold(text: string) {
+  const parts = text.split('**');
+  return parts.map((part, index) => {
+    if (index % 2 === 1) {
+      return <strong key={index} className="font-extrabold">{part}</strong>;
+    }
+    return part;
+  });
+}
+
+function formatContent(content: string) {
+  const lines = content.split('\n');
+  return lines.map((line, lineIdx) => {
+    const trimmed = line.trim();
+
+    // Si es un título de tipo ###
+    if (trimmed.startsWith('###')) {
+      let headerText = trimmed.replace(/^###\s*/, '');
+      if (headerText.endsWith(':')) {
+        headerText = headerText.slice(0, -1);
+      }
+      return (
+        <h3 key={lineIdx} className="text-primary-dark font-bold text-sm md:text-base mt-3 mb-1.5 first:mt-0">
+          {parseBold(headerText)}
+        </h3>
+      );
+    }
+
+    // Si es un item de lista desordenada (por ejemplo "- Titular:")
+    if (trimmed.startsWith('- ')) {
+      const rest = line.substring(line.indexOf('- ') + 2);
+      return (
+        <div key={lineIdx} className="pl-4 relative before:content-['•'] before:absolute before:left-1 before:text-slate-400">
+          {parseBold(rest)}
+        </div>
+      );
+    }
+
+    // Si es un item de lista ordenada (por ejemplo "1. **GLUCOPHAGE**")
+    const matchNumerado = trimmed.match(/^(\d+)\.\s(.*)/);
+    if (matchNumerado) {
+      const numero = matchNumerado[1];
+      const rest = matchNumerado[2];
+      return (
+        <div key={lineIdx} className="pl-1.5 mb-0.5">
+          <span className="font-semibold text-slate-500 mr-1.5">{numero}.</span>
+          {parseBold(rest)}
+        </div>
+      );
+    }
+
+    // Línea de texto normal (párrafo o línea vacía)
+    return (
+      <p key={lineIdx} className={trimmed === '' ? 'h-2' : 'mb-1'}>
+        {parseBold(line)}
+      </p>
+    );
+  });
+}
+
 export default function ChatWidget() {
   const { isSignedIn, user } = useAuth();
   const [abierto, setAbierto] = useState(false);
@@ -24,10 +84,36 @@ export default function ChatWidget() {
   const [texto, setTexto] = useState('');
   const [cargando, setCargando] = useState(false);
   const finRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     finRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [mensajes, cargando]);
+
+  // Cerrar el chat al hacer scroll en la página principal o hacer click afuera
+  useEffect(() => {
+    if (!abierto) return;
+
+    const handleClickFuera = (event: MouseEvent) => {
+      if (widgetRef.current && !widgetRef.current.contains(event.target as Node)) {
+        setAbierto(false);
+      }
+    };
+
+    const handleScrollGlobal = () => {
+      setAbierto(false);
+    };
+
+    document.addEventListener('mousedown', handleClickFuera);
+    // Agregamos el listener a window. El evento scroll no burbujea,
+    // por lo que no se disparará al hacer scroll dentro del chat box.
+    window.addEventListener('scroll', handleScrollGlobal);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickFuera);
+      window.removeEventListener('scroll', handleScrollGlobal);
+    };
+  }, [abierto]);
 
   if (!isSignedIn) return null;
 
@@ -52,12 +138,12 @@ export default function ChatWidget() {
   };
 
   return (
-    <>
+    <div ref={widgetRef}>
       {/* Botón flotante */}
       <button
         onClick={() => setAbierto((p) => !p)}
         aria-label={abierto ? 'Cerrar asistente' : 'Abrir asistente MediWatch'}
-        className="fixed bottom-6 right-6 z-[1100] w-14 h-14 rounded-full bg-primary text-white text-2xl shadow-lg cursor-pointer hover:scale-105 transition-transform flex items-center justify-center"
+        className="fixed bottom-6 right-6 z-1100 w-14 h-14 rounded-full bg-primary text-white text-2xl shadow-lg cursor-pointer hover:scale-105 transition-transform flex items-center justify-center"
       >
         {abierto ? '✕' : '💬'}
       </button>
@@ -67,7 +153,7 @@ export default function ChatWidget() {
         <div
           role="dialog"
           aria-label="Asistente MediWatch"
-          className="fixed bottom-24 right-6 z-[1100] w-[min(420px,calc(100vw-3rem))] h-[540px] bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+          className="fixed bottom-24 right-6 z-1100 w-[min(420px,calc(100vw-3rem))] h-[540px] bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
         >
           <header className="px-4 py-3 bg-primary text-white">
             <p className="font-bold text-sm">Asistente MediWatch</p>
@@ -95,13 +181,13 @@ export default function ChatWidget() {
             {mensajes.map((m, i) => (
               <div key={i} className={m.role === 'user' ? 'self-end max-w-[85%]' : 'self-start max-w-[90%]'}>
                 <div
-                  className={`px-4 py-2.5 rounded-2xl text-sm whitespace-pre-wrap leading-relaxed ${
+                  className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                     m.role === 'user'
-                      ? 'bg-primary text-white rounded-br-sm'
+                      ? 'bg-primary text-white rounded-br-sm whitespace-pre-wrap'
                       : 'bg-white border border-slate-200 text-slate-800 rounded-bl-sm shadow-sm'
                   }`}
                 >
-                  {m.content}
+                  {m.role === 'user' ? m.content : formatContent(m.content)}
                 </div>
                 {m.sources && m.sources.length > 0 && (
                   <div className="mt-1.5 flex flex-col gap-1">
@@ -151,6 +237,6 @@ export default function ChatWidget() {
           </form>
         </div>
       )}
-    </>
+    </div>
   );
 }
