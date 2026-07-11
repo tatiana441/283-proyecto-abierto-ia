@@ -38,6 +38,33 @@ def buscar(search: str = Query(..., min_length=2), limit: int = Query(20, le=100
     return filas
 
 
+@router.get("/categoria/{atc_prefix}", response_model=list[MedicamentoResumen])
+def por_categoria(atc_prefix: str, limit: int = Query(50, le=200)):
+    """Retorna medicamentos cuyo código ATC empieza con atc_prefix (ej: 'C', 'A10', 'N05')."""
+    patron = f"{atc_prefix.upper().strip()}%"
+    filas = query(
+        f"""
+        SELECT p.expediente, max(p.producto) AS producto, max(p.titular) AS titular,
+               max(p.estadoregistro) AS estadoregistro,
+               array_agg(DISTINCT pa.principioactivo) AS principios_activos,
+               max(pa.atc) AS atc,
+               max(rs.score) AS riesgo_score
+        FROM productos p
+        JOIN principios_activos_cum pa ON pa.expediente = p.expediente
+        LEFT JOIN match_principio_activo m ON m.nombre_cum = {_NORM.format('pa.principioactivo')}
+        LEFT JOIN risk_scores rs ON rs.principio_activo = m.nombre_vitales
+        WHERE pa.atc LIKE %s
+        GROUP BY p.expediente
+        ORDER BY max(rs.score) DESC NULLS LAST, max(p.producto)
+        LIMIT %s
+        """,
+        (patron, limit),
+    )
+    for f in filas:
+        f["riesgo_nivel"] = _nivel(f["riesgo_score"])
+    return filas
+
+
 def _nivel(score) -> str | None:
     if score is None:
         return None

@@ -164,3 +164,13 @@ main {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ── Search Autocomplete Dropdown ───────────────────────────────────────── */
+.search-dropdown {
+  animation: fade-in 0.15s ease both;
+}
+
+/* Asegurar que el ítem activo sea visible al navegar con teclado */
+.search-dropdown [role="option"][aria-selected="true"] {
+  background-color: hsl(213 85% 42% / 0.08);
+}

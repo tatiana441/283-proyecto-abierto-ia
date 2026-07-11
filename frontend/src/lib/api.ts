@@ -111,6 +111,9 @@ interface ApiDetalle {
 export const buscarMedicamentos = (q: string, limit = 20) =>
   get<ApiMedicamento[]>(`/api/medicamentos?search=${encodeURIComponent(q)}&limit=${limit}`);
 
+export const buscarPorCategoria = (atcPrefix: string, limit = 50) =>
+  get<ApiMedicamento[]>(`/api/medicamentos/categoria/${encodeURIComponent(atcPrefix)}?limit=${limit}`);
+
 export const obtenerStats = () => get<ApiStats>('/api/stats');
 
 export const topRiesgo = (n = 25) => get<ApiRiesgo[]>(`/api/riesgo/top?n=${n}`);
