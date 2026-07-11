@@ -101,6 +101,12 @@ export default function ChatWidget() {
     };
 
     const handleScrollGlobal = () => {
+      // Si el input de texto del chat tiene el foco, no lo cerramos.
+      // Esto evita que se cierre cuando el teclado virtual de móviles se despliega y altera el scroll de la página.
+      const input = widgetRef.current?.querySelector('input');
+      if (input && document.activeElement === input) {
+        return;
+      }
       setAbierto(false);
     };
 
