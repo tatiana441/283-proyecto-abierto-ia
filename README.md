@@ -77,16 +77,18 @@ python -m pytest tests/ -v                 # tests
 
 ## Enlaces de acceso
 
-- [Descargar presentación (.PPTX)](RECURSOS/Presentacion.pptx) *(día 4)*
-- [Ver presentación en línea (.PDF)](RECURSOS/presentacion.pdf) *(día 4)*
+- [Descargar archivo original (.PPTX)](RECURSOS/Presentacion.pptx) — *para abrir y editar en PowerPoint*
+- [Ver presentación en línea (.PDF)](RECURSOS/presentacion.pdf) — *abre el visor de GitHub*
+- [Descarga directa (.PDF)](RECURSOS/presentacion.pdf?raw=true&inline=false) — *fuerza la descarga*
 
 ## Equipo
 
 | Nombre | Rol |
 |--------|-----|
-| Tatiana | Data / Backend / Coordinación |
-| Liliana Forero | Frontend / UI-UX |
-| Integrante 3 | Data Engineering (compactación Spark SISMED) |
+| Tatiana Milena Muñoz | Coordinación · Data & Backend |
+| Liliana Forero Noguera | Frontend / UI-UX |
+| Jesus de Avila | Ingeniería de datos (Big Data / SISMED) |
+| Johan Cuellar | Análisis de datos y validación |
 
 ## Licencia
 
