@@ -81,7 +81,10 @@ export const RISK = {
     '("Medicamentos Vitales No Disponibles"); cada solicitud es una señal de escasez. El puntaje 0–100 combina ' +
     'cinco factores sobre esas solicitudes: frecuencia (35%), tendencia al alza (25%), qué tan recientes son (20%), ' +
     'cuántos solicitantes distintos hay (10%) y su urgencia (10%). De 0 a 33 el riesgo es bajo, de 34 a 66 en ' +
-    'observación y de 67 en adelante alto. El método fue validado con un backtest temporal (AUC 0,79).',
+    'observación y de 67 en adelante alto. El método fue validado con un backtest temporal (AUC 0,79). ' +
+    'Importante: un puntaje alto indica que las autoridades ya están gestionando la importación del medicamento, ' +
+    'no que vaya a desaparecer de las farmacias; no es motivo para comprar de más ni acumular. Ante cualquier duda ' +
+    'sobre tu tratamiento, consulta siempre a un profesional de la salud.',
 };
 
 // ── Medication Profile Card ──────────────────────────────────────────────────
