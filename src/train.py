@@ -65,32 +65,35 @@ def backtest(panel: pd.DataFrame, cortes: list[str], horizonte: int, k: int) -> 
             "auc": round(float(roc_auc_score(test["y"], proba)), 3),
             f"precision_at_{k}": round(float(top_k["y"].mean()), 3),
         })
-        ultimo = {"test": test, "proba": proba, "modelo": modelo}
+        ultimo = {"test": test, "proba": proba, "modelo": modelo, "corte": corte}
 
     return resultados, ultimo
 
 
-def figuras_evaluacion(test: pd.DataFrame, proba, k: int) -> None:
+def figuras_evaluacion(test: pd.DataFrame, proba, k: int, corte: str | None = None) -> None:
     FIGURAS.mkdir(parents=True, exist_ok=True)
+    # Las figuras se dibujan sobre UN corte (el último del backtest); el AUC que
+    # muestran es el de ese corte, no el promedio de los 4 (ese va en metrics.json).
+    suf = f" ({corte})" if corte else ""
 
     # Matriz de confusión (umbral 0.5)
     cm = confusion_matrix(test["y"], (proba >= 0.5).astype(int))
     fig, ax = plt.subplots(figsize=(5, 4))
     ConfusionMatrixDisplay(cm, display_labels=["Sin solicitudes", "Con solicitudes"]).plot(ax=ax, colorbar=False)
-    ax.set_title("Matriz de confusión — último corte del backtest")
+    ax.set_title(f"Matriz de confusión — último corte del backtest{suf}")
     fig.tight_layout()
     fig.savefig(FIGURAS / "matriz_confusion.png", dpi=150)
     plt.close(fig)
 
-    # Curva ROC
+    # Curva ROC (de este corte; el AUC promedio de los 4 cortes está en metrics.json)
     fpr, tpr, _ = roc_curve(test["y"], proba)
     auc = roc_auc_score(test["y"], proba)
     fig, ax = plt.subplots(figsize=(5, 4))
-    ax.plot(fpr, tpr, label=f"AUC = {auc:.3f}")
+    ax.plot(fpr, tpr, label=f"AUC = {auc:.3f} (este corte)")
     ax.plot([0, 1], [0, 1], "--", color="gray")
     ax.set_xlabel("Tasa de falsos positivos")
     ax.set_ylabel("Tasa de verdaderos positivos")
-    ax.set_title("Curva ROC — riesgo de desabastecimiento")
+    ax.set_title(f"Curva ROC — último corte del backtest{suf}")
     ax.legend()
     fig.tight_layout()
     fig.savefig(FIGURAS / "roc.png", dpi=150)
@@ -149,7 +152,7 @@ def main() -> None:
     if not ultimo:
         raise RuntimeError("El backtest no produjo ningún corte evaluable")
 
-    figuras_evaluacion(ultimo["test"], ultimo["proba"], k)
+    figuras_evaluacion(ultimo["test"], ultimo["proba"], k, ultimo.get("corte"))
 
     # Modelo final: todo el histórico etiquetable
     etiquetado = agregar_label(panel, horizonte).dropna(subset=["y"])
