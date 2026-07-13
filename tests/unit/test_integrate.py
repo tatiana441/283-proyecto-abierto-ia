@@ -39,3 +39,28 @@ def test_cascada_completa():
     assert metodos["METOTREXATO"] == "exacto"
     assert metodos["AMOXICILINA TRIHIDRATO"] == "fuzzy"
     assert metodos["NOEXISTE 999"] == "sin_match"
+
+
+def test_guardia_rechaza_numero_romano():
+    """Factor XIII no debe cruzar con Factor VIII (moléculas distintas, >90% parecido)."""
+    puente = match_principios_activos(["FACTOR XIII"], ["FACTOR VIII"])
+    assert puente.iloc[0]["metodo"] == "sin_match"
+
+
+def test_guardia_rechaza_isomero_griego():
+    """Interferón alfa no debe cruzar con interferón beta."""
+    puente = match_principios_activos(["INTERFERON ALFA 2B"], ["INTERFERON BETA 1A"])
+    assert puente.iloc[0]["metodo"] == "sin_match"
+
+
+def test_guardia_rechaza_prefijo_isomero():
+    """Megestrol vs Nomegestrol: un prefijo cambia la molécula (score fuzzy 95)."""
+    puente = match_principios_activos(["ACETATO DE MEGESTROL"], ["ACETATO DE NOMEGESTROL"])
+    assert puente.iloc[0]["metodo"] == "sin_match"
+
+
+def test_guardia_no_afecta_variaciones_legitimas():
+    """El guardia no debe rechazar variaciones de escritura del mismo principio activo."""
+    for vit, cum in [("NITISINONE", "NITISINONA"), ("MAGNESIO SULFATO", "SULFATO DE MAGNESIO")]:
+        puente = match_principios_activos([vit], [cum])
+        assert puente.iloc[0]["metodo"] == "fuzzy", f"{vit} debería cruzar con {cum}"

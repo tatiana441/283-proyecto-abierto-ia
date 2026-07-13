@@ -65,6 +65,42 @@ def componentes_pa(nombre_limpio: str) -> list[str]:
     return [p.strip() for p in partes if p and len(p.strip()) > 3]
 
 
+def _a_romano(n: int) -> str:
+    salida, tabla = "", [(10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I")]
+    for valor, simbolo in tabla:
+        while n >= valor:
+            salida += simbolo
+            n -= valor
+    return salida
+
+
+# Tokens que, aunque el nombre sea >90% parecido, CAMBIAN la molécula. Evitan que
+# rapidfuzz una Factor VIII con XIII, interferón alfa con beta, o megestrol con
+# NOmegestrol (falsos positivos verificados a mano en la validación del puente).
+_ROMANOS = frozenset(_a_romano(n) for n in range(2, 21))  # II..XX (I/V/X sueltos son ambiguos)
+_ISOMEROS = frozenset({"ALFA", "ALPHA", "BETA", "GAMMA", "DELTA", "EPSILON"})
+_PREFIJOS_ISOMERO = ("NO", "NOR", "DES", "ISO", "DEXTRO", "LEVO")
+
+
+def _token_distintivo_difiere(a: str, b: str) -> bool:
+    """True si dos nombres ya parecidos se distinguen por un token que cambia la
+    molécula: número romano, letra griega de isómero o prefijo (megestrol vs
+    NOmegestrol). Se usa como guardia sobre los candidatos fuzzy."""
+    ta, tb = a.split(), b.split()
+    if {t for t in ta if t in _ROMANOS} != {t for t in tb if t in _ROMANOS}:
+        return True
+    if {t for t in ta if t in _ISOMEROS} != {t for t in tb if t in _ISOMEROS}:
+        return True
+    for x in ta:
+        for y in tb:
+            if x == y:
+                continue
+            largo, corto = (x, y) if len(x) > len(y) else (y, x)
+            if len(corto) >= 5 and largo.endswith(corto) and largo[: -len(corto)] in _PREFIJOS_ISOMERO:
+                return True
+    return False
+
+
 def _indice_cum(nombres_cum: list[str]) -> dict[str, set[str]]:
     """Índice {variante_limpia -> TODOS los nombres CUM normalizados que le corresponden}.
 
@@ -97,7 +133,7 @@ def match_principios_activos(nombres_vitales: list[str], nombres_cum: list[str])
         if candidato in indice:
             return indice[candidato], "exacto", 100.0
         encontrado = process.extractOne(candidato, universo, scorer=fuzz.token_sort_ratio, score_cutoff=UMBRAL_FUZZY)
-        if encontrado:
+        if encontrado and not _token_distintivo_difiere(candidato, encontrado[0]):
             return indice[encontrado[0]], "fuzzy", round(encontrado[1], 1)
         return None, None, None
 
