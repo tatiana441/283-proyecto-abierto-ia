@@ -3,6 +3,7 @@
 import json
 
 from fastapi import APIRouter, HTTPException
+from openai import OpenAIError
 from pydantic import BaseModel, Field
 
 from src.agents import citizen_agent
@@ -31,6 +32,15 @@ def chat(body: PreguntaChat):
         )
     except RuntimeError as e:
         raise HTTPException(503, f"Asistente no disponible: {e}") from e
+    except OpenAIError as e:
+        # Falla del proveedor LLM (credenciales, red, cuota): el chat degrada con
+        # mensaje claro; el resto de la plataforma no depende del LLM.
+        print(f"[chat] proveedor LLM no disponible: {type(e).__name__}: {e}")
+        raise HTTPException(
+            503,
+            "El asistente no está disponible en este momento. Los datos de la "
+            "plataforma siguen funcionando; intenta de nuevo más tarde.",
+        ) from e
 
     try:
         with get_conn() as conn:
